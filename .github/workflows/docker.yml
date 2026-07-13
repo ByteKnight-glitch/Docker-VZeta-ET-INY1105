@@ -1,0 +1,36 @@
+name: Docker CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Login en Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Build myapp_container
+        run: |
+          docker build -t dereks36319/myapp_container:latest ./myapp
+
+      - name: Push myapp_container
+        run: |
+          docker push dereks36319/myapp_container:latest
+
+      - name: Build mynginx_container
+        run: |
+          docker build -t dereks36319/mynginx_container:latest ./mynginx
+
+      - name: Push mynginx_container
+        run: |
+          docker push dereks36319/mynginx_container:latest
